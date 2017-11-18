@@ -45,7 +45,7 @@ var (
 	jobCount = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "", "jobs"),
 		"How many jobs are there in the cluster.",
-		nil, nil,
+		[]string{"status"}, nil,
 	)
 	allocationCount = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "", "allocations"),
@@ -205,9 +205,15 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 		logError(err)
 		return
 	}
-	ch <- prometheus.MustNewConstMetric(
-		jobCount, prometheus.GaugeValue, float64(len(jobs)),
-	)
+
+	var jobCounts map[string]int = countJobsByStatus(jobs)
+
+	for status, count := range jobCounts {
+		ch <- prometheus.MustNewConstMetric(
+			jobCount, prometheus.GaugeValue, float64(count), status,
+		)
+	}
+
 	allocs, _, err := e.client.Allocations().List(&api.QueryOptions{})
 	if err != nil {
 		logError(err)
@@ -330,6 +336,23 @@ func getRunningAllocs(client *api.Client, nodeID string) ([]*api.Allocation, err
 		}
 	}
 	return allocs, err
+}
+
+func countJobsByStatus(jobs []*api.JobListStub) map[string]int {
+	var counts map[string]int = make(map[string]int)
+	var currStatus string
+
+	counts[strings.ToLower("running")] = 0
+	counts[strings.ToLower("dead")] = 0
+	counts[strings.ToLower("pending")] = 0
+	// if there is a job with a status other than these, it seems it will automatically be initialized in the map to 1 via the +=.
+
+	for _, job := range jobs {
+		currStatus = strings.ToLower(job.Status)
+		counts[currStatus] += 1
+	}
+
+	return counts
 }
 
 func main() {
