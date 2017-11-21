@@ -3,7 +3,7 @@
 ## Docker
 
 ```
-  nomon/nomad-exporter:latest
+docker build -t nomad-exporter:latest .
 ```
 
 ## Exported Metrics
