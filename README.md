@@ -1,4 +1,15 @@
-# nomad prometheus exporter
+# nomad-exporter
+
+A fork of [Nomon/nomad-exporter](https://github.com/Nomon/nomad-exporter) which
+exposes metrics not exposed by the default Nomad Prometheus
+[telemetry endpoint](https://www.nomadproject.io/docs/agent/telemetry.html).
+
+## Local Development
+
+```
+go run nomad-exporter.go --nomad.server $NOMAD_ADDR
+curl -s localhost:9172/metrics | grep -E '^nomad_'
+```
 
 ## Docker
 
