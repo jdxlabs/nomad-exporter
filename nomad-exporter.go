@@ -32,26 +32,26 @@ var (
 	)
 
 	nodeCount = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-			Namespace: namespace,
-			Name: "nodes",
-			Help: "the number of nodes",
-		},
+		Namespace: namespace,
+		Name:      "nodes",
+		Help:      "the number of nodes",
+	},
 		[]string{"datacenter", "class", "drain", "status"},
 	)
 
 	jobCount = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-			Namespace: namespace,
-			Name: "jobs",
-			Help: "the number of jobs",
-		},
+		Namespace: namespace,
+		Name:      "jobs",
+		Help:      "the number of jobs",
+	},
 		[]string{"status", "type"},
 	)
 
 	allocCount = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-			Namespace: namespace,
-			Name: "allocs",
-			Help: "the number of allocs",
-		},
+		Namespace: namespace,
+		Name:      "allocs",
+		Help:      "the number of allocs",
+	},
 		[]string{
 			"client_status",
 			"desired_status",
@@ -63,18 +63,18 @@ var (
 	)
 
 	evalCount = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-			Namespace: namespace,
-			Name: "evals",
-			Help: "the number of evaluations",
-		},
+		Namespace: namespace,
+		Name:      "evals",
+		Help:      "the number of evaluations",
+	},
 		[]string{"status"},
 	)
 
 	taskCount = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-			Namespace: namespace,
-			Name: "tasks",
-			Help: "the number of tasks",
-		},
+		Namespace: namespace,
+		Name:      "tasks",
+		Help:      "the number of tasks",
+	},
 		[]string{
 			"state",
 			"failed",
@@ -84,10 +84,10 @@ var (
 	)
 
 	deploymentCount = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-			Namespace: namespace,
-			Name: "deployments",
-			Help: "the number of deployments",
-		},
+		Namespace: namespace,
+		Name:      "deployments",
+		Help:      "the number of deployments",
+	},
 		[]string{
 			"status",
 			"job_id",
@@ -95,10 +95,10 @@ var (
 	)
 
 	deploymentTaskGroupDesiredCanaries = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-			Namespace: namespace,
-			Name: "deployment_task_group_desired_canaries",
-			Help: "the number of desired canaries for the task group",
-		},
+		Namespace: namespace,
+		Name:      "deployment_task_group_desired_canaries",
+		Help:      "the number of desired canaries for the task group",
+	},
 		[]string{
 			"job_id",
 			"deployment_id",
@@ -107,10 +107,10 @@ var (
 		},
 	)
 	deploymentTaskGroupDesiredTotal = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-			Namespace: namespace,
-			Name: "deployment_task_group_desired_total",
-			Help: "the number of desired allocs for the task group",
-		},
+		Namespace: namespace,
+		Name:      "deployment_task_group_desired_total",
+		Help:      "the number of desired allocs for the task group",
+	},
 		[]string{
 			"job_id",
 			"deployment_id",
@@ -119,10 +119,10 @@ var (
 		},
 	)
 	deploymentTaskGroupPlacedAllocs = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-			Namespace: namespace,
-			Name: "deployment_task_group_placed_allocs",
-			Help: "the number of placed allocs for the task group",
-		},
+		Namespace: namespace,
+		Name:      "deployment_task_group_placed_allocs",
+		Help:      "the number of placed allocs for the task group",
+	},
 		[]string{
 			"job_id",
 			"deployment_id",
@@ -131,10 +131,10 @@ var (
 		},
 	)
 	deploymentTaskGroupHealthyAllocs = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-			Namespace: namespace,
-			Name: "deployment_task_group_healthy_allocs",
-			Help: "the number of healthy allocs for the task group",
-		},
+		Namespace: namespace,
+		Name:      "deployment_task_group_healthy_allocs",
+		Help:      "the number of healthy allocs for the task group",
+	},
 		[]string{
 			"job_id",
 			"deployment_id",
@@ -143,10 +143,10 @@ var (
 		},
 	)
 	deploymentTaskGroupUnhealthyAllocs = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-			Namespace: namespace,
-			Name: "deployment_task_group_unhealthy_allocs",
-			Help: "the number of unhealthy allocs for the task group",
-		},
+		Namespace: namespace,
+		Name:      "deployment_task_group_unhealthy_allocs",
+		Help:      "the number of unhealthy allocs for the task group",
+	},
 		[]string{
 			"job_id",
 			"deployment_id",
@@ -206,9 +206,9 @@ func collectNodeMetrics(e *Exporter, ch chan<- prometheus.Metric) error {
 	for _, node := range nodes {
 		nodeCount.With(prometheus.Labels{
 			"datacenter": node.Datacenter,
-			"class": node.NodeClass,
-			"drain": strconv.FormatBool(node.Drain),
-			"status": node.Status,
+			"class":      node.NodeClass,
+			"drain":      strconv.FormatBool(node.Drain),
+			"status":     node.Status,
 		}).Add(1)
 	}
 
@@ -238,7 +238,7 @@ func collectJobMetrics(e *Exporter, ch chan<- prometheus.Metric) error {
 }
 
 func collectMetricsForSingleAlloc(e *Exporter, w *sync.WaitGroup, allocStub *api.AllocationListStub) {
-	defer w.Done();
+	defer w.Done()
 
 	alloc, _, err := e.client.Allocations().Info(allocStub.ID, &api.QueryOptions{})
 	if err != nil {
@@ -254,7 +254,7 @@ func collectMetricsForSingleAlloc(e *Exporter, w *sync.WaitGroup, allocStub *api
 		"job_type":       *job.Type,
 		//"job_id":         alloc.JobID,
 		//"task_group":     alloc.TaskGroup,
-		"node_id":        alloc.NodeID,
+		"node_id": alloc.NodeID,
 	}).Add(1)
 
 	taskStates := alloc.TaskStates
@@ -329,8 +329,8 @@ func collectDeploymentMetrics(e *Exporter, ch chan<- prometheus.Metric) error {
 		taskGroups := dep.TaskGroups
 
 		deploymentCount.With(prometheus.Labels{
-			"status":   dep.Status,
-			"job_id":   dep.JobID,
+			"status": dep.Status,
+			"job_id": dep.JobID,
 		}).Add(1)
 
 		for taskGroupName, taskGroup := range taskGroups {
@@ -392,49 +392,49 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 
 	//var w sync.WaitGroup
 	//for _, a := range runningAllocs {
-		//w.Add(1)
-		//go func(a *api.AllocationListStub) {
-			//defer w.Done()
-			//alloc, _, err := e.client.Allocations().Info(a.ID, &api.QueryOptions{})
-			//if err != nil {
-				//logError(err)
-				//return
-			//}
+	//w.Add(1)
+	//go func(a *api.AllocationListStub) {
+	//defer w.Done()
+	//alloc, _, err := e.client.Allocations().Info(a.ID, &api.QueryOptions{})
+	//if err != nil {
+	//logError(err)
+	//return
+	//}
 
-			//stats, err := e.client.Allocations().Stats(alloc, &api.QueryOptions{})
-			//if err != nil {
-				//logError(err)
-				//return
-			//}
-			//node, _, err := e.client.Nodes().Info(alloc.NodeID, &api.QueryOptions{})
-			//if err != nil {
-				//logError(err)
-				//return
-			//}
-			//for taskName, taskStats := range stats.Tasks {
-				//ch <- prometheus.MustNewConstMetric(
-					//taskCPUPercent, prometheus.GaugeValue, taskStats.ResourceUsage.CpuStats.Percent, alloc.Job.Name, alloc.TaskGroup, alloc.Name, taskName, alloc.Job.Region, node.Datacenter, node.Name,
-				//)
-				//ch <- prometheus.MustNewConstMetric(
-					//taskCPUTotalTicks, prometheus.GaugeValue, taskStats.ResourceUsage.CpuStats.TotalTicks, alloc.Job.Name, alloc.TaskGroup, alloc.Name, taskName, alloc.Job.Region, node.Datacenter, node.Name,
-				//)
-				//ch <- prometheus.MustNewConstMetric(
-					//taskMemoryRssBytes, prometheus.GaugeValue, float64(taskStats.ResourceUsage.MemoryStats.RSS), alloc.Job.Name, alloc.TaskGroup, alloc.Name, taskName, alloc.Job.Region, node.Datacenter, node.Name,
-				//)
-			//}
-			//ch <- prometheus.MustNewConstMetric(
-				//allocationCPU, prometheus.GaugeValue, stats.ResourceUsage.CpuStats.Percent, alloc.Job.Name, alloc.TaskGroup, alloc.Name, alloc.Job.Region, node.Datacenter, node.Name,
-			//)
-			//ch <- prometheus.MustNewConstMetric(
-				//allocationCPUThrottled, prometheus.GaugeValue, float64(stats.ResourceUsage.CpuStats.ThrottledTime), alloc.Job.Name, alloc.TaskGroup, alloc.Name, alloc.Job.Region, node.Datacenter, node.Name,
-			//)
-			//ch <- prometheus.MustNewConstMetric(
-				//allocationMemory, prometheus.GaugeValue, float64(stats.ResourceUsage.MemoryStats.RSS), alloc.Job.Name, alloc.TaskGroup, alloc.Name, alloc.Job.Region, node.Datacenter, node.Name,
-			//)
-			//ch <- prometheus.MustNewConstMetric(
-				//allocationMemoryLimit, prometheus.GaugeValue, float64(alloc.Resources.MemoryMB), alloc.Job.Name, alloc.TaskGroup, alloc.Name, alloc.Job.Region, node.Datacenter, node.Name,
-			//)
-		//}(a)
+	//stats, err := e.client.Allocations().Stats(alloc, &api.QueryOptions{})
+	//if err != nil {
+	//logError(err)
+	//return
+	//}
+	//node, _, err := e.client.Nodes().Info(alloc.NodeID, &api.QueryOptions{})
+	//if err != nil {
+	//logError(err)
+	//return
+	//}
+	//for taskName, taskStats := range stats.Tasks {
+	//ch <- prometheus.MustNewConstMetric(
+	//taskCPUPercent, prometheus.GaugeValue, taskStats.ResourceUsage.CpuStats.Percent, alloc.Job.Name, alloc.TaskGroup, alloc.Name, taskName, alloc.Job.Region, node.Datacenter, node.Name,
+	//)
+	//ch <- prometheus.MustNewConstMetric(
+	//taskCPUTotalTicks, prometheus.GaugeValue, taskStats.ResourceUsage.CpuStats.TotalTicks, alloc.Job.Name, alloc.TaskGroup, alloc.Name, taskName, alloc.Job.Region, node.Datacenter, node.Name,
+	//)
+	//ch <- prometheus.MustNewConstMetric(
+	//taskMemoryRssBytes, prometheus.GaugeValue, float64(taskStats.ResourceUsage.MemoryStats.RSS), alloc.Job.Name, alloc.TaskGroup, alloc.Name, taskName, alloc.Job.Region, node.Datacenter, node.Name,
+	//)
+	//}
+	//ch <- prometheus.MustNewConstMetric(
+	//allocationCPU, prometheus.GaugeValue, stats.ResourceUsage.CpuStats.Percent, alloc.Job.Name, alloc.TaskGroup, alloc.Name, alloc.Job.Region, node.Datacenter, node.Name,
+	//)
+	//ch <- prometheus.MustNewConstMetric(
+	//allocationCPUThrottled, prometheus.GaugeValue, float64(stats.ResourceUsage.CpuStats.ThrottledTime), alloc.Job.Name, alloc.TaskGroup, alloc.Name, alloc.Job.Region, node.Datacenter, node.Name,
+	//)
+	//ch <- prometheus.MustNewConstMetric(
+	//allocationMemory, prometheus.GaugeValue, float64(stats.ResourceUsage.MemoryStats.RSS), alloc.Job.Name, alloc.TaskGroup, alloc.Name, alloc.Job.Region, node.Datacenter, node.Name,
+	//)
+	//ch <- prometheus.MustNewConstMetric(
+	//allocationMemoryLimit, prometheus.GaugeValue, float64(alloc.Resources.MemoryMB), alloc.Job.Name, alloc.TaskGroup, alloc.Name, alloc.Job.Region, node.Datacenter, node.Name,
+	//)
+	//}(a)
 	//}
 	//w.Wait()
 }
