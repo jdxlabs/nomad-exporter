@@ -8,8 +8,6 @@ import (
     "os"
     "strconv"
     "sync"
-    //"time"
-
     "github.com/hashicorp/nomad/api"
     "github.com/prometheus/client_golang/prometheus"
     "github.com/prometheus/common/version"
@@ -252,8 +250,6 @@ func collectMetricsForSingleAlloc(e *Exporter, w *sync.WaitGroup, allocStub *api
         "client_status":  alloc.ClientStatus,
         "desired_status": alloc.DesiredStatus,
         "job_type":       *job.Type,
-        //"job_id":         alloc.JobID,
-        //"task_group":     alloc.TaskGroup,
         "node_id": alloc.NodeID,
     }).Add(1)
 
@@ -389,54 +385,6 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
         logError(err)
         return
     }
-
-    //var w sync.WaitGroup
-    //for _, a := range runningAllocs {
-    //w.Add(1)
-    //go func(a *api.AllocationListStub) {
-    //defer w.Done()
-    //alloc, _, err := e.client.Allocations().Info(a.ID, &api.QueryOptions{})
-    //if err != nil {
-    //logError(err)
-    //return
-    //}
-
-    //stats, err := e.client.Allocations().Stats(alloc, &api.QueryOptions{})
-    //if err != nil {
-    //logError(err)
-    //return
-    //}
-    //node, _, err := e.client.Nodes().Info(alloc.NodeID, &api.QueryOptions{})
-    //if err != nil {
-    //logError(err)
-    //return
-    //}
-    //for taskName, taskStats := range stats.Tasks {
-    //ch <- prometheus.MustNewConstMetric(
-    //taskCPUPercent, prometheus.GaugeValue, taskStats.ResourceUsage.CpuStats.Percent, alloc.Job.Name, alloc.TaskGroup, alloc.Name, taskName, alloc.Job.Region, node.Datacenter, node.Name,
-    //)
-    //ch <- prometheus.MustNewConstMetric(
-    //taskCPUTotalTicks, prometheus.GaugeValue, taskStats.ResourceUsage.CpuStats.TotalTicks, alloc.Job.Name, alloc.TaskGroup, alloc.Name, taskName, alloc.Job.Region, node.Datacenter, node.Name,
-    //)
-    //ch <- prometheus.MustNewConstMetric(
-    //taskMemoryRssBytes, prometheus.GaugeValue, float64(taskStats.ResourceUsage.MemoryStats.RSS), alloc.Job.Name, alloc.TaskGroup, alloc.Name, taskName, alloc.Job.Region, node.Datacenter, node.Name,
-    //)
-    //}
-    //ch <- prometheus.MustNewConstMetric(
-    //allocationCPU, prometheus.GaugeValue, stats.ResourceUsage.CpuStats.Percent, alloc.Job.Name, alloc.TaskGroup, alloc.Name, alloc.Job.Region, node.Datacenter, node.Name,
-    //)
-    //ch <- prometheus.MustNewConstMetric(
-    //allocationCPUThrottled, prometheus.GaugeValue, float64(stats.ResourceUsage.CpuStats.ThrottledTime), alloc.Job.Name, alloc.TaskGroup, alloc.Name, alloc.Job.Region, node.Datacenter, node.Name,
-    //)
-    //ch <- prometheus.MustNewConstMetric(
-    //allocationMemory, prometheus.GaugeValue, float64(stats.ResourceUsage.MemoryStats.RSS), alloc.Job.Name, alloc.TaskGroup, alloc.Name, alloc.Job.Region, node.Datacenter, node.Name,
-    //)
-    //ch <- prometheus.MustNewConstMetric(
-    //allocationMemoryLimit, prometheus.GaugeValue, float64(alloc.Resources.MemoryMB), alloc.Job.Name, alloc.TaskGroup, alloc.Name, alloc.Job.Region, node.Datacenter, node.Name,
-    //)
-    //}(a)
-    //}
-    //w.Wait()
 }
 
 func main() {
