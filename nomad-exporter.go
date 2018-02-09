@@ -18,11 +18,11 @@ const (
 )
 
 var (
-    upDesc = prometheus.NewDesc(
-        prometheus.BuildFQName(namespace, "", "up"),
-        "Was the last query of Nomad successful.",
-        nil, nil,
-    )
+//    upDesc = prometheus.NewDesc(
+//        prometheus.BuildFQName(namespace, "", "up"),
+//        "Was the last query of Nomad successful.",
+//        nil, nil,
+//    )
     clusterServersDesc = prometheus.NewDesc(
         prometheus.BuildFQName(namespace, "", "raft_peers"),
         "How many peers (servers) are in the Raft cluster.",
@@ -54,8 +54,6 @@ var (
             "client_status",
             "desired_status",
             "job_type",
-            //"job_id",
-            //"task_group",
             "node_id",
         },
     )
@@ -169,29 +167,29 @@ func NewExporter(cfg *api.Config) (*Exporter, error) {
 }
 
 func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
-    ch <- upDesc
+//    ch <- upDesc
     ch <- clusterServersDesc
 }
 
-func collectPeersMetrics(e *Exporter, ch chan<- prometheus.Metric) error {
-    peers, err := e.client.Status().Peers()
-    if err != nil {
-        ch <- prometheus.MustNewConstMetric(
-            upDesc, prometheus.GaugeValue, 0,
-        )
-        return err
-    }
-
-    ch <- prometheus.MustNewConstMetric(
-        upDesc, prometheus.GaugeValue, 1,
-    )
-
-    ch <- prometheus.MustNewConstMetric(
-        clusterServersDesc, prometheus.GaugeValue, float64(len(peers)),
-    )
-
-    return nil
-}
+// func collectPeersMetrics(e *Exporter, ch chan<- prometheus.Metric) error {
+//     peers, err := e.client.Status().Peers()
+//     if err != nil {
+//         ch <- prometheus.MustNewConstMetric(
+//             upDesc, prometheus.GaugeValue, 0,
+//         )
+//         return err
+//     }
+//
+//     ch <- prometheus.MustNewConstMetric(
+//         upDesc, prometheus.GaugeValue, 1,
+//     )
+//
+//     ch <- prometheus.MustNewConstMetric(
+//         clusterServersDesc, prometheus.GaugeValue, float64(len(peers)),
+//     )
+//
+//     return nil
+// }
 
 func collectNodeMetrics(e *Exporter, ch chan<- prometheus.Metric) error {
     nodeCount.Reset()
@@ -350,13 +348,13 @@ func collectDeploymentMetrics(e *Exporter, ch chan<- prometheus.Metric) error {
 
 // Collect collects nomad metrics
 func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
-    err := collectPeersMetrics(e, ch)
-    if err != nil {
-        logError(err)
-        return
-    }
+    // err := collectPeersMetrics(e, ch)
+    // if err != nil {
+    //     logError(err)
+    //     return
+    // }
 
-    err = collectNodeMetrics(e, ch)
+    err := collectNodeMetrics(e, ch)
     if err != nil {
         logError(err)
         return
