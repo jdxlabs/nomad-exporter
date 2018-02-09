@@ -66,18 +66,18 @@ var (
         []string{"status"},
     )
 
-    taskCount = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-        Namespace: namespace,
-        Name:      "tasks",
-        Help:      "the number of tasks",
-    },
-        []string{
-            "state",
-            "failed",
-            "job_type",
-            "node_id",
-        },
-    )
+    // taskCount = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+    //     Namespace: namespace,
+    //     Name:      "tasks",
+    //     Help:      "the number of tasks",
+    // },
+    //     []string{
+    //         "state",
+    //         "failed",
+    //         "job_type",
+    //         "node_id",
+    //     },
+    // )
 
     deploymentCount = prometheus.NewGaugeVec(prometheus.GaugeOpts{
         Namespace: namespace,
@@ -251,21 +251,21 @@ func collectMetricsForSingleAlloc(e *Exporter, w *sync.WaitGroup, allocStub *api
         "node_id": alloc.NodeID,
     }).Add(1)
 
-    taskStates := alloc.TaskStates
+    // taskStates := alloc.TaskStates
 
-    for _, task := range taskStates {
-        taskCount.With(prometheus.Labels{
-            "state":    task.State,
-            "failed":   strconv.FormatBool(task.Failed),
-            "job_type": *job.Type,
-            "node_id":  alloc.NodeID,
-        }).Add(1)
-    }
+    // for _, task := range taskStates {
+    //     taskCount.With(prometheus.Labels{
+    //         "state":    task.State,
+    //         "failed":   strconv.FormatBool(task.Failed),
+    //         "job_type": *job.Type,
+    //         "node_id":  alloc.NodeID,
+    //     }).Add(1)
+    // }
 }
 
 func collectAllocMetrics(e *Exporter, ch chan<- prometheus.Metric) error {
     allocCount.Reset()
-    taskCount.Reset()
+    // taskCount.Reset()
 
     allocStubs, _, err := e.client.Allocations().List(&api.QueryOptions{})
     if err != nil {
@@ -283,7 +283,7 @@ func collectAllocMetrics(e *Exporter, ch chan<- prometheus.Metric) error {
 
     w.Wait()
     allocCount.Collect(ch)
-    taskCount.Collect(ch)
+    //taskCount.Collect(ch)
     return nil
 }
 
